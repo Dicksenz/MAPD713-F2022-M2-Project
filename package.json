@@ -1,0 +1,11 @@
+{
+  "name": "mapd713-f2022-group2-m2-codes",
+  "version": "1.0.0",
+  "description": "MAPD713-F2022-Milestone2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dicksen Veloopillay",
+  "license": "ISC"
+}
