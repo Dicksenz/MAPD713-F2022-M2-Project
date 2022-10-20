@@ -73,3 +73,37 @@ server
 
   // Maps req.body to req.params
   .use(restify.plugins.bodyParser());
+
+// 1. Create a new patient with general information
+server.post("/patients", function (req, res, next) {
+  console.log("POST request: patient params=>" + JSON.stringify(req.params));
+  console.log("POST request: patient body=>" + JSON.stringify(req.body));
+  // Make sure name is defined
+  if (req.body.first_name === undefined) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new errors.BadRequestError("first_name must be supplied"));
+  }
+  if (req.body.last_name === undefined) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new errors.BadRequestError("last_name must be supplied"));
+  }
+
+  // Creating new patient.
+  var newPatient = new Patient({
+    first_name: req.body.first_name,
+    last_name: req.body.last_name,
+    email: req.body.email,
+    mobile_number: req.body.mobile_number,
+    address: req.body.address,
+    sex: req.body.sex,
+    date_of_birth: req.body.date_of_birth,
+  });
+
+  // Create the patient and saving to db
+  newPatient.save(function (error, result) {
+    // If there are any errors, pass them to next in the correct format
+    if (error) return next(new Error(JSON.stringify(error.errors)));
+    // Send the patient if no issues
+    res.send(201, result);
+  });
+});
