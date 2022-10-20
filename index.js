@@ -26,3 +26,15 @@ db.once("open", function () {
   // we're connected!
   console.log("!!!! Connected to db: " + uristring);
 });
+
+// This is the schema.  Note the types, validation and trim
+// statements.  They enforce useful constraints on the data.
+var patientSchema = new mongoose.Schema({
+  first_name: String,
+  last_name: String,
+  email: String,
+  mobile_number: String,
+  address: String,
+  sex: String,
+  date_of_birth: String,
+});
