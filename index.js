@@ -74,7 +74,7 @@ server
   // Maps req.body to req.params
   .use(restify.plugins.bodyParser());
 
-// 1. Create a new patient with general information
+// Use case 1. Create a new patient with general information
 server.post("/patients", function (req, res, next) {
   console.log("POST request: patient params=>" + JSON.stringify(req.params));
   console.log("POST request: patient body=>" + JSON.stringify(req.body));
@@ -105,5 +105,31 @@ server.post("/patients", function (req, res, next) {
     if (error) return next(new Error(JSON.stringify(error.errors)));
     // Send the patient if no issues
     res.send(201, result);
+  });
+});
+
+// Use case 2. Get all patients in the system
+server.get("/patients", function (req, res, next) {
+  console.log("GET request: patient");
+  // Find every entity within the given collection
+  Patient.find({}).exec(function (error, result) {
+    if (error) return next(new Error(JSON.stringify(error.errors)));
+    res.send(result);
+  });
+});
+
+// Use case 3. Get a single patient by their patient id
+server.get("/patients/:id", function (req, res, next) {
+  console.log("GET request: patient/" + req.params.id);
+
+  // Find a single patient by their id
+  Patient.find({ _id: req.params.id }).exec(function (error, patient) {
+    if (patient) {
+      // Send the patient if no issues
+      res.send(patient);
+    } else {
+      // Send 404 header if the patient doesn't exist
+      res.send(404);
+    }
   });
 });
