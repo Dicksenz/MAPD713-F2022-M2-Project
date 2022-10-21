@@ -110,7 +110,7 @@ server.post("/patients", function (req, res, next) {
 
 // Use case 2. Get all patients in the system
 server.get("/patients", function (req, res, next) {
-  console.log("GET request: patient");
+  console.log("GET request: patients");
   // Find every entity within the given collection
   Patient.find({}).exec(function (error, result) {
     if (error) return next(new Error(JSON.stringify(error.errors)));
@@ -120,7 +120,7 @@ server.get("/patients", function (req, res, next) {
 
 // Use case 3. Get a single patient by their patient id
 server.get("/patients/:id", function (req, res, next) {
-  console.log("GET request: patient/" + req.params.id);
+  console.log("GET request: patients/" + req.params.id);
 
   // Find a single patient by their id
   Patient.find({ _id: req.params.id }).exec(function (error, patient) {
