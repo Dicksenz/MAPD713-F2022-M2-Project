@@ -76,8 +76,8 @@ server
 
 // Use case 1. Create a new patient with general information
 server.post("/patients", function (req, res, next) {
-  console.log("POST request: patient params=>" + JSON.stringify(req.params));
-  console.log("POST request: patient body=>" + JSON.stringify(req.body));
+  console.log("POST request: patients params=>" + JSON.stringify(req.params));
+  console.log("POST request: patients body=>" + JSON.stringify(req.body));
   // Make sure name is defined
   if (req.body.first_name === undefined) {
     // If there are any errors, pass them to next in the correct format
@@ -86,6 +86,26 @@ server.post("/patients", function (req, res, next) {
   if (req.body.last_name === undefined) {
     // If there are any errors, pass them to next in the correct format
     return next(new errors.BadRequestError("last_name must be supplied"));
+  }
+  if (req.body.email === undefined) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new errors.BadRequestError("email must be supplied"));
+  }
+  if (req.body.mobile_number === undefined) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new errors.BadRequestError("mobile number must be supplied"));
+  }
+  if (req.body.address === undefined) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new errors.BadRequestError("address must be supplied"));
+  }
+  if (req.body.sex === undefined) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new errors.BadRequestError("sex must be supplied"));
+  }
+  if (req.body.date_of_birth === undefined) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new errors.BadRequestError("date of birth must be supplied"));
   }
 
   // Creating new patient.
@@ -136,7 +156,7 @@ server.get("/patients/:id", function (req, res, next) {
 
 // Delete patient with the given id
 server.del("/patients/:id", function (req, res, next) {
-  console.log("DEL request: patient/" + req.params.id);
+  console.log("DEL request: patients/" + req.params.id);
   Patient.remove({ _id: req.params.id }, function (error, result) {
     // If there are any errors, pass them to next in the correct format
     if (error) return next(new Error(JSON.stringify(error.errors)));
