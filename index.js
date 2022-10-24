@@ -133,3 +133,15 @@ server.get("/patients/:id", function (req, res, next) {
     }
   });
 });
+
+// Delete patient with the given id
+server.del("/patients/:id", function (req, res, next) {
+  console.log("DEL request: patient/" + req.params.id);
+  Patient.remove({ _id: req.params.id }, function (error, result) {
+    // If there are any errors, pass them to next in the correct format
+    if (error) return next(new Error(JSON.stringify(error.errors)));
+
+    // Send a 200 OK response
+    res.send();
+  });
+});
