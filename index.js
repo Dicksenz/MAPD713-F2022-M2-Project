@@ -1,6 +1,6 @@
 var DEFAULT_PORT = 5000;
 var DEFAULT_HOST = "127.0.0.1";
-var SERVER_NAME = "smarthealth";
+var SERVER_NAME = "smarthealth2";
 
 var http = require("http");
 var mongoose = require("mongoose");
@@ -46,7 +46,7 @@ var Patient = mongoose.model("patients", patientSchema);
 var errors = require("restify-errors");
 var restify = require("restify"),
   // Create the restify server
-  server = restify.createServer();
+  server = restify.createServer({ name: SERVER_NAME });
 
 if (typeof ipaddress === "undefined") {
   //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
