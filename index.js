@@ -6,7 +6,7 @@ var http = require("http");
 var mongoose = require("mongoose");
 
 var port = process.env.PORT;
-var ipaddress = process.env.SERVER; // Must be changed to integrate heroku later.
+var ipaddress = process.env.IP; // Must be changed to integrate heroku later.
 
 // Here we find an appropriate database to connect to, defaulting to
 // localhost if we don't find one.
