@@ -5,7 +5,7 @@ var SERVER_NAME = "smarthealth";
 var http = require("http");
 var mongoose = require("mongoose");
 
-var port = process.env.PORT || 5000;
+var port = process.env.PORT;
 var ipaddress = process.env.IP; // Must be changed to integrate heroku later.
 
 // Here we find an appropriate database to connect to, defaulting to
@@ -60,7 +60,7 @@ if (typeof port === "undefined") {
   port = DEFAULT_PORT;
 }
 
-server.listen(port, function () {
+server.listen(port, ipaddress, function () {
   console.log("Server %s listening at %s", server.name, server.url);
   console.log("Resources:");
   console.log(" /patients");
