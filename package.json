@@ -11,6 +11,9 @@
   "dependencies": {
     "mongoose": "=5.10.7",
     "restify": "=8.5.1"
+  },
+  "engines": {
+    "node": "16.17.0"
   }
 
 }
