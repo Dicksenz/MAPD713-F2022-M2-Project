@@ -60,7 +60,7 @@ if (typeof port === "undefined") {
   port = DEFAULT_PORT;
 }
 
-server.listen(port, function () {
+server.listen(port, ipaddress, function () {
   console.log("Server %s listening at %s", server.name, server.url);
   console.log("Resources:");
   console.log(" /patients");
