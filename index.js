@@ -1,6 +1,6 @@
 var DEFAULT_PORT = 5000;
 var DEFAULT_HOST = "127.0.0.1";
-var SERVER_NAME = "smarthealth2";
+var SERVER_NAME = "smarthealth";
 
 var http = require("http");
 var mongoose = require("mongoose");
@@ -63,7 +63,12 @@ if (typeof port === "undefined") {
 }
 
 server.listen(port, function () {
-  console.log("Server %s listening at %s", server.name, server.url);
+  // I had to remove ipaddress as heroku does not work with that.
+  console.log(
+    "Server %s listening at %s",
+    server.name,
+    "http://127.0.0.1:5000"
+  );
   console.log("Resources:");
   console.log(" /patients");
   console.log(" /patients/:id");
