@@ -6,7 +6,7 @@ var http = require("http");
 var mongoose = require("mongoose");
 
 var port = process.env.PORT || 5000;
-// var ipaddress = process.env.IP; // Must be changed to integrate heroku later.
+var ipaddress = process.env.IP; // Must be changed to integrate heroku later.
 
 // Here we find an appropriate database to connect to, defaulting to
 // localhost if we don't find one.
@@ -48,12 +48,12 @@ var restify = require("restify"),
   // Create the restify server
   server = restify.createServer();
 
-// if (typeof ipaddress === "undefined") {
-//   //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
-//   //  allows us to run/test the app locally.
-//   console.warn("No process.env.IP var, using default: " + DEFAULT_HOST);
-//   ipaddress = DEFAULT_HOST;
-// }
+if (typeof ipaddress === "undefined") {
+  //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
+  //  allows us to run/test the app locally.
+  console.warn("No process.env.IP var, using default: " + DEFAULT_HOST);
+  ipaddress = DEFAULT_HOST;
+}
 
 if (typeof port === "undefined") {
   console.warn("No process.env.PORT var, using default port: " + DEFAULT_PORT);
