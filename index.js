@@ -74,6 +74,10 @@ server
   // Maps req.body to req.params
   .use(restify.plugins.bodyParser());
 
+server.get("/", function (req, res, next) {
+  res.send({ message: "ok" });
+});
+
 // Use case 1. Create a new patient with general information
 server.post("/patients", function (req, res, next) {
   console.log("POST request: patients params=>" + JSON.stringify(req.params));
