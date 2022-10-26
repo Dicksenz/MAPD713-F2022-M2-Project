@@ -1,11 +1,11 @@
-var DEFAULT_PORT = 3000;
+var DEFAULT_PORT = 5000;
 var DEFAULT_HOST = "127.0.0.1";
 var SERVER_NAME = "smarthealth2";
 
 var http = require("http");
 var mongoose = require("mongoose");
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 5000;
 var ipaddress = process.env.IP; // Must be changed to integrate heroku later.
 
 // Here we find an appropriate database to connect to, defaulting to
