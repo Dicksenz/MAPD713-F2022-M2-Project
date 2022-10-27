@@ -62,6 +62,8 @@ if (typeof port === "undefined") {
   port = DEFAULT_PORT;
 }
 
+
+// Remove ipaddressfrom the server listen function for heroku to work.
 server.listen(port, function () {
   // I had to remove ipaddress as heroku does not work with that.
   console.log(
