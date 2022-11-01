@@ -287,7 +287,7 @@ server.get("/patients/conditions", async function (req, res, next) {
             // Create custom json object.
             finalRes.push({
               _id: e._id,
-              date_tested: dateTestedLow,
+              date_tested: dateTestedHigh,
               first_name: e.first_name,
               last_name: e.last_name,
               sex: e.sex,
