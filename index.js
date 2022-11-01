@@ -4,6 +4,7 @@ var SERVER_NAME = "smarthealth";
 
 var http = require("http");
 var mongoose = require("mongoose");
+const { pid } = require("process");
 
 var port = process.env.PORT || 5000;
 var ipaddress = process.env.IP; // Must be changed to integrate heroku later.
@@ -253,6 +254,49 @@ server.get("/patients/:patientid/tests/:testid", function (req, res, next) {
       }
     }
   );
+});
+
+// Use case 7. get list of patients with critical conditions.
+server.get("/patients/conditions", async function (req, res, next) {
+  console.log("GET request: patients/conditions");
+  var pId = [];
+
+  var finalRes = [];
+  var dateTested;
+
+  Test.find({})
+    .then((data) => {
+      data.map((d, k) => {
+        if (d.readings.systolic < 90 || d.readings.diastolic < 60) {
+          pId.push(d.patient_id);
+          dateTested = d.date;
+        }
+      });
+
+      Patient.find({ _id: { $in: pId } })
+        .then((data) => {
+          data.map((e) => {
+            // Create custom json object.
+            finalRes.push({
+              _id: e._id,
+              date_tested: dateTested,
+              first_name: e.first_name,
+              last_name: e.last_name,
+              sex: e.sex,
+              date_of_birth: e.date_of_birth,
+              conditions: ["Blood pressure low"],
+            });
+          });
+
+          res.send(finalRes);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 });
 
 // Delete patient with the given id
