@@ -222,7 +222,7 @@ server.post("/patients/:id/tests", function (req, res, next) {
   });
 });
 
-// Use case 5. Get tests records of a patient by their id
+// Use case 5. Get list of tests records of a patient by their id
 server.get("/patients/:id/tests", function (req, res, next) {
   console.log("GET request: patients/" + req.params.id + "/tests");
 
