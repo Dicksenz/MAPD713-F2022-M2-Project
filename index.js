@@ -39,9 +39,19 @@ var patientSchema = new mongoose.Schema({
   date_of_birth: String,
 });
 
+// Patient clinical test schema
+var patientClinicalTestSchema = new mongoose.Schema({
+  patient_id: String,
+  category: String,
+  date: String,
+  nurse_name: String,
+  readings: {},
+});
+
 // Compiles the schema into a model, opening (or creating, if
 // nonexistent) the 'Patients' collection in the MongoDB database
 var Patient = mongoose.model("patients", patientSchema);
+var Test = mongoose.model("tests", patientClinicalTestSchema);
 
 var errors = require("restify-errors");
 var restify = require("restify"),
@@ -61,7 +71,6 @@ if (typeof port === "undefined") {
   console.warn("No process.env.PORT var, using default port: " + DEFAULT_PORT);
   port = DEFAULT_PORT;
 }
-
 
 // Remove ipaddressfrom the server listen function for heroku to work.
 server.listen(port, function () {
@@ -164,6 +173,51 @@ server.get("/patients/:id", function (req, res, next) {
       // Send 404 header if the patient doesn't exist
       res.send(404);
     }
+  });
+});
+
+// Use case 4, Add clinical test for a patient by their patient id
+server.post("/patients/:id/tests", function (req, res, next) {
+  console.log("POST request: patients/" + req.params.id + "/tests");
+  console.log("POST request: patient params=>" + JSON.stringify(req.params));
+  console.log("POST request: patient body=>" + JSON.stringify(req.body));
+  // Make sure name is defined
+  if (req.body.category === undefined) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new errors.BadRequestError("category must be supplied"));
+  }
+  if (req.body.date === undefined) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new errors.BadRequestError("date must be supplied"));
+  }
+  if (req.body.nurse_name === undefined) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new errors.BadRequestError("nurse name must be supplied"));
+  }
+  if (req.body.readings === undefined) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new errors.BadRequestError("readings name must be supplied"));
+  }
+  if (req.params.id === undefined || req.params.id === "") {
+    // If there are any errors, pass them to next in the correct format
+    return next(new errors.BadRequestError("id must be supplied"));
+  }
+
+  // Creating new patient.
+  var newTest = new Test({
+    patient_id: req.params.id,
+    category: req.body.category,
+    date: req.body.date,
+    nurse_name: req.body.nurse_name,
+    readings: req.body.readings,
+  });
+
+  // Create the test and saving to db
+  newTest.save(function (error, result) {
+    // If there are any errors, pass them to next in the correct format
+    if (error) return next(new Error(JSON.stringify(error.errors)));
+    // Send the patient if no issues
+    res.send(201, result);
   });
 });
 
