@@ -259,27 +259,54 @@ server.get("/patients/:patientid/tests/:testid", function (req, res, next) {
 // Use case 7. get list of patients with critical conditions.
 server.get("/patients/conditions", async function (req, res, next) {
   console.log("GET request: patients/conditions");
-  var pId = [];
+  var pIdLow = [];
+  var pIdHigh = [];
 
   var finalRes = [];
-  var dateTested;
+  var dateTestedLow;
+  var dateTestedHigh;
 
   Test.find({})
     .then((data) => {
       data.map((d, k) => {
-        if (d.readings.systolic < 90 || d.readings.diastolic < 60) {
-          pId.push(d.patient_id);
-          dateTested = d.date;
+        if (d.readings.systolic < 70 || d.readings.diastolic < 60) {
+          pIdLow.push(d.patient_id);
+          dateTestedLow = d.date;
+        }
+
+        if (d.readings.systolic > 120 || d.readings.diastolic > 80) {
+          pIdHigh.push(d.patient_id);
+          dateTestedHigh = d.date;
+          console.log("High");
         }
       });
 
-      Patient.find({ _id: { $in: pId } })
+      Patient.find({ _id: { $in: pIdHigh } })
         .then((data) => {
           data.map((e) => {
             // Create custom json object.
             finalRes.push({
               _id: e._id,
-              date_tested: dateTested,
+              date_tested: dateTestedLow,
+              first_name: e.first_name,
+              last_name: e.last_name,
+              sex: e.sex,
+              date_of_birth: e.date_of_birth,
+              conditions: ["Blood pressure high"],
+            });
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      Patient.find({ _id: { $in: pIdLow } })
+        .then((data) => {
+          data.map((e) => {
+            // Create custom json object.
+            finalRes.push({
+              _id: e._id,
+              date_tested: dateTestedLow,
               first_name: e.first_name,
               last_name: e.last_name,
               sex: e.sex,
@@ -299,7 +326,7 @@ server.get("/patients/conditions", async function (req, res, next) {
     });
 });
 
-// Delete patient with the given id
+//Use case 8. Delete patient with the given id
 server.del("/patients/:id", function (req, res, next) {
   console.log("DEL request: patients/" + req.params.id);
   Patient.remove({ _id: req.params.id }, function (error, result) {
