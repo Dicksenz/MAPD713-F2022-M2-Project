@@ -237,6 +237,24 @@ server.get("/patients/:id/tests", function (req, res, next) {
   });
 });
 
+// Use case 6. Get a single clinical detail of a patient by their patient id and test id.
+server.get("/patients/:patientid/tests/:testid", function (req, res, next) {
+  console.log("GET request: patients/" + req.params.id + "/tests");
+
+  // Find all tests records of a patient by their id
+  Test.find({ patient_id: req.params.patientid, _id: req.params.testid }).exec(
+    function (error, test) {
+      if (test) {
+        // Send the patient if no issues
+        res.send(test[0]);
+      } else {
+        // Send 404 header if the patient doesn't exist
+        res.send(404);
+      }
+    }
+  );
+});
+
 // Delete patient with the given id
 server.del("/patients/:id", function (req, res, next) {
   console.log("DEL request: patients/" + req.params.id);
