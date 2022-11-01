@@ -221,6 +221,22 @@ server.post("/patients/:id/tests", function (req, res, next) {
   });
 });
 
+// Use case 5. Get tests records of a patient by their id
+server.get("/patients/:id/tests", function (req, res, next) {
+  console.log("GET request: patients/" + req.params.id + "/tests");
+
+  // Find all tests records of a patient by their id
+  Test.find({ patient_id: req.params.id }).exec(function (error, test) {
+    if (test) {
+      // Send the patient if no issues
+      res.send(test);
+    } else {
+      // Send 404 header if the patient doesn't exist
+      res.send(404);
+    }
+  });
+});
+
 // Delete patient with the given id
 server.del("/patients/:id", function (req, res, next) {
   console.log("DEL request: patients/" + req.params.id);
