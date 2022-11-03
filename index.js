@@ -177,6 +177,7 @@ server.get("/patients/:id", function (req, res, next) {
   });
 });
 
+// Milestone 3
 // Use case 4, Add clinical test for a patient by their patient id
 server.post("/patients/:id/tests", function (req, res, next) {
   console.log("POST request: patients/" + req.params.id + "/tests");
