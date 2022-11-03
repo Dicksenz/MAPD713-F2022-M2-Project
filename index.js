@@ -267,9 +267,9 @@ server.get("/patients/conditions", async function (req, res, next) {
   var dateTestedLow;
   var dateTestedHigh;
 
-  Test.find({})
-    .then((data) => {
-      data.map((d, k) => {
+  await Test.find({})
+    .then(async (data) => {
+      await data.map((d, k) => {
         if (d.readings.systolic < 70 || d.readings.diastolic < 60) {
           pIdLow.push(d.patient_id);
           dateTestedLow = d.date;
@@ -282,7 +282,7 @@ server.get("/patients/conditions", async function (req, res, next) {
         }
       });
 
-      Patient.find({ _id: { $in: pIdHigh } })
+      await Patient.find({ _id: { $in: pIdHigh } })
         .then((data) => {
           data.map((e) => {
             // Create custom json object.
@@ -301,7 +301,7 @@ server.get("/patients/conditions", async function (req, res, next) {
           console.log(error);
         });
 
-      Patient.find({ _id: { $in: pIdLow } })
+      await Patient.find({ _id: { $in: pIdLow } })
         .then((data) => {
           data.map((e) => {
             // Create custom json object.
