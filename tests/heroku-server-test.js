@@ -1,4 +1,4 @@
-// This is testing if heroku responds status 200
+// This is testing if heroku server smarthealth2 responds status 200
 // On terminal type cd tests then
 // Use this command "mocha heroku-server-test.js" on the terminal to run this test.
 
