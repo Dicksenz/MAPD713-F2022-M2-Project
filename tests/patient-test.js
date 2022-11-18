@@ -19,7 +19,7 @@ var patientId = "";
 
 //Check if API create a patient returns 201
 describe("when we issue a 'POST' to create a patient'", function () {
-  it("should return HTTP 200", function (done) {
+  it("should return HTTP 201", function (done) {
     chai
       .request(url)
       .post("/patients")
