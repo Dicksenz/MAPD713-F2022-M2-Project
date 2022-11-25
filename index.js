@@ -347,7 +347,7 @@ server.del("/patients/:id", function (req, res, next) {
   });
 });
 
-// Please ignore this part
+// Please ignore this part its just for practice.
 // It is for testing only and it is not for this assignment requirement.
 server.post("/patients/:id/tests/:testid/fix", async function (req, res, next) {
   await Test.find({ patient_id: req.params.id, _id: req.params.testid }).exec(
