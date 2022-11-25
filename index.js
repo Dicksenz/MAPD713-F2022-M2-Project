@@ -352,49 +352,56 @@ server.del("/patients/:id", function (req, res, next) {
 server.post("/patients/:id/tests/:testid/fix", async function (req, res, next) {
   await Test.find({ patient_id: req.params.id, _id: req.params.testid }).exec(
     function (error, test) {
-      if (test) {
-        //create duplicate test
-        var newTest = new Test({
-          patient_id: req.params.id,
-          category: test[0].category,
-          date: test[0].date,
-          nurse_name: test[0].nurse_name,
-          readings: {
-            isVisible: false,
-            systolic: test[0].readings.systolic,
-            diastolic: test[0].readings.diastolic,
-          },
-        });
+      try {
+        if (test) {
+          //create duplicate test
+          var newTest = new Test({
+            patient_id: req.params.id,
+            category: test[0].category,
+            date: test[0].date,
+            nurse_name: test[0].nurse_name,
+            readings: {
+              isVisible: false,
+              systolic: test[0].readings.systolic,
+              diastolic: test[0].readings.diastolic,
+            },
+          });
 
-        // Create the test and saving to db
-        newTest.save(function (error, result) {
-          // If there are any errors, pass them to next in the correct format
-          if (error) return next(new Error(JSON.stringify(error.errors)));
-        });
+          // Create the test and saving to db
+          newTest.save(function (error, result) {
+            // If there are any errors, pass them to next in the correct format
+            if (error) return next(new Error(JSON.stringify(error.errors)));
+          });
+
+          // Creating new test.
+          var newTest2 = new Test({
+            patient_id: req.params.id,
+            category: req.body.category,
+            date: req.body.date,
+            nurse_name: req.body.nurse_name,
+            readings: req.body.readings,
+          });
+
+          // Create the test and saving to db
+          newTest2.save(function (error, result) {
+            // If there are any errors, pass them to next in the correct format
+            if (error) return next(new Error(JSON.stringify(error.errors)));
+          });
+
+          Test.deleteOne({ _id: req.params.testid }, function (error, result) {
+            // If there are any errors, pass them to next in the correct format
+            if (error) return next(new Error(JSON.stringify(error.errors)));
+
+            // Send a 200 OK response
+            res.send();
+          });
+        } else {
+          // Send 404 header if the patient doesn't exist
+          res.send(404);
+        }
+      } catch (err) {
+        res.send(404);
       }
     }
   );
-
-  // Creating new test.
-  var newTest2 = new Test({
-    patient_id: req.params.id,
-    category: req.body.category,
-    date: req.body.date,
-    nurse_name: req.body.nurse_name,
-    readings: req.body.readings,
-  });
-
-  // Create the test and saving to db
-  await newTest2.save(function (error, result) {
-    // If there are any errors, pass them to next in the correct format
-    if (error) return next(new Error(JSON.stringify(error.errors)));
-  });
-
-  await Test.deleteOne({ _id: req.params.testid }, function (error, result) {
-    // If there are any errors, pass them to next in the correct format
-    if (error) return next(new Error(JSON.stringify(error.errors)));
-
-    // Send a 200 OK response
-    res.send();
-  });
 });
