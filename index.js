@@ -393,7 +393,7 @@ server.post("/patients/:id/tests/:testid/fix", async function (req, res, next) {
             if (error) return next(new Error(JSON.stringify(error.errors)));
 
             // Send a 200 OK response
-            res.send();
+            res.send({ success: true });
           });
         } else {
           // Send 404 header if the patient doesn't exist
