@@ -367,7 +367,10 @@ server.post("/patients/:id/tests/:testid/fix", async function (req, res, next) {
         });
 
         // Create the test and saving to db
-        newTest.save(function (error, result) {});
+        newTest.save(function (error, result) {
+          // If there are any errors, pass them to next in the correct format
+          if (error) return next(new Error(JSON.stringify(error.errors)));
+        });
       }
     }
   );
@@ -382,7 +385,10 @@ server.post("/patients/:id/tests/:testid/fix", async function (req, res, next) {
   });
 
   // Create the test and saving to db
-  await newTest2.save(function (error, result) {});
+  await newTest2.save(function (error, result) {
+    // If there are any errors, pass them to next in the correct format
+    if (error) return next(new Error(JSON.stringify(error.errors)));
+  });
 
   await Test.deleteOne({ _id: req.params.testid }, function (error, result) {
     // If there are any errors, pass them to next in the correct format
