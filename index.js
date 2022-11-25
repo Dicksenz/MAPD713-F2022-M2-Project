@@ -205,7 +205,7 @@ server.post("/patients/:id/tests", function (req, res, next) {
     return next(new errors.BadRequestError("id must be supplied"));
   }
 
-  // Creating new patient.
+  // Creating new test.
   var newTest = new Test({
     patient_id: req.params.id,
     category: req.body.category,
@@ -266,19 +266,25 @@ server.get("/patients/conditions", async function (req, res, next) {
   var finalRes = [];
   var dateTestedLow;
   var dateTestedHigh;
+  var testIdLow;
+  var testIdHigh;
 
   await Test.find({})
     .then(async (data) => {
       await data.map((d, k) => {
-        if (d.readings.systolic < 70 || d.readings.diastolic < 60) {
-          pIdLow.push(d.patient_id);
-          dateTestedLow = d.date;
-        }
+        if (!("isVisible" in d.readings)) {
+          if (d.readings.systolic < 70 || d.readings.diastolic < 60) {
+            pIdLow.push(d.patient_id);
+            dateTestedLow = d.date;
+            testIdLow = d._id;
+          }
 
-        if (d.readings.systolic > 120 || d.readings.diastolic > 80) {
-          pIdHigh.push(d.patient_id);
-          dateTestedHigh = d.date;
-          console.log("High");
+          if (d.readings.systolic > 120 || d.readings.diastolic > 80) {
+            pIdHigh.push(d.patient_id);
+            dateTestedHigh = d.date;
+            testIdHigh = d._id;
+            console.log("High");
+          }
         }
       });
 
@@ -288,6 +294,7 @@ server.get("/patients/conditions", async function (req, res, next) {
             // Create custom json object.
             finalRes.push({
               _id: e._id,
+              test_id: testIdHigh,
               date_tested: dateTestedHigh,
               first_name: e.first_name,
               last_name: e.last_name,
@@ -307,6 +314,7 @@ server.get("/patients/conditions", async function (req, res, next) {
             // Create custom json object.
             finalRes.push({
               _id: e._id,
+              test_id: testIdLow,
               date_tested: dateTestedLow,
               first_name: e.first_name,
               last_name: e.last_name,
@@ -331,6 +339,52 @@ server.get("/patients/conditions", async function (req, res, next) {
 server.del("/patients/:id", function (req, res, next) {
   console.log("DEL request: patients/" + req.params.id);
   Patient.remove({ _id: req.params.id }, function (error, result) {
+    // If there are any errors, pass them to next in the correct format
+    if (error) return next(new Error(JSON.stringify(error.errors)));
+
+    // Send a 200 OK response
+    res.send();
+  });
+});
+
+// Please ignore this part
+// It is for testing only and it is not for this assignment requirement.
+server.post("/patients/:id/tests/:testid/fix", async function (req, res, next) {
+  await Test.find({ patient_id: req.params.id, _id: req.params.testid }).exec(
+    function (error, test) {
+      if (test) {
+        //create duplicate test
+        var newTest = new Test({
+          patient_id: req.params.id,
+          category: test[0].category,
+          date: test[0].date,
+          nurse_name: test[0].nurse_name,
+          readings: {
+            isVisible: false,
+            systolic: test[0].readings.systolic,
+            diastolic: test[0].readings.diastolic,
+          },
+        });
+
+        // Create the test and saving to db
+        newTest.save(function (error, result) {});
+      }
+    }
+  );
+
+  // Creating new test.
+  var newTest2 = new Test({
+    patient_id: req.params.id,
+    category: req.body.category,
+    date: req.body.date,
+    nurse_name: req.body.nurse_name,
+    readings: req.body.readings,
+  });
+
+  // Create the test and saving to db
+  await newTest2.save(function (error, result) {});
+
+  await Test.deleteOne({ _id: req.params.testid }, function (error, result) {
     // If there are any errors, pass them to next in the correct format
     if (error) return next(new Error(JSON.stringify(error.errors)));
 
