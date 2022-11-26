@@ -231,7 +231,7 @@ server.get("/patients/:id/tests", function (req, res, next) {
   Test.find({ patient_id: req.params.id }).exec(function (error, test) {
     if (test) {
       // Send the patient if no issues
-      res.send(test);
+      res.send(test.reverse());
     } else {
       // Send 404 header if the patient doesn't exist
       res.send(404);
