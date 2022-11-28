@@ -466,7 +466,7 @@ server.post("/users", function (req, res, next) {
 
 // Professor please ignore this part as this is for other app integration for android.
 // for login testing purposes
-// and is not required in the assignment.
+// and is not required in this assignment.
 server.post("/users/login", function (req, res, next) {
   console.log(req.body.email);
   User.find({ email: req.body.email, password: req.body.password }).exec(
