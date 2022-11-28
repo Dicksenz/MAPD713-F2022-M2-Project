@@ -2,6 +2,7 @@ var DEFAULT_PORT = 5000;
 var DEFAULT_HOST = "127.0.0.1";
 var SERVER_NAME = "smarthealth";
 
+const { use } = require("chai");
 var http = require("http");
 var mongoose = require("mongoose");
 const { pid } = require("process");
@@ -49,10 +50,25 @@ var patientClinicalTestSchema = new mongoose.Schema({
   readings: {},
 });
 
+// Professor please ignore this schema as this is for other app integration for android.
+// for testing purposes
+// and is not required in the assignment.
+var userSchema = new mongoose.Schema({
+  first_name: String,
+  last_name: String,
+  email: String,
+  password: String,
+});
+
 // Compiles the schema into a model, opening (or creating, if
 // nonexistent) the 'Patients' collection in the MongoDB database
 var Patient = mongoose.model("patients", patientSchema);
 var Test = mongoose.model("tests", patientClinicalTestSchema);
+
+// Professor please ignore this schema as this is for other app integration for android.
+// for testing purposes
+// and is not required in the assignment.
+var User = mongoose.model("users", userSchema);
 
 var errors = require("restify-errors");
 var restify = require("restify"),
@@ -400,6 +416,66 @@ server.post("/patients/:id/tests/:testid/fix", async function (req, res, next) {
           res.send(404);
         }
       } catch (err) {
+        res.send(404);
+      }
+    }
+  );
+});
+
+// Professor please ignore this part as this is for other app integration for android.
+// for login testing purposes
+// and is not required in the assignment.
+// Create a user
+server.post("/users", function (req, res, next) {
+  console.log("POST request: users params=>" + JSON.stringify(req.params));
+  console.log("POST request: users body=>" + JSON.stringify(req.body));
+  // Make sure name is defined
+  if (req.body.first_name === undefined) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new errors.BadRequestError("first_name must be supplied"));
+  }
+  if (req.body.last_name === undefined) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new errors.BadRequestError("last_name must be supplied"));
+  }
+  if (req.body.email === undefined) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new errors.BadRequestError("email must be supplied"));
+  }
+  if (req.body.password === undefined) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new errors.BadRequestError("password must be supplied"));
+  }
+
+  // Creating new user.
+  var newUser = new User({
+    first_name: req.body.first_name,
+    last_name: req.body.last_name,
+    email: req.body.email,
+    password: req.body.password,
+  });
+
+  // Create the user and saving to db
+  newUser.save(function (error, result) {
+    // If there are any errors, pass them to next in the correct format
+    if (error) return next(new Error(JSON.stringify(error.errors)));
+    // Send the patient if no issues
+    res.send(201, result);
+  });
+});
+
+// Professor please ignore this part as this is for other app integration for android.
+// for login testing purposes
+// and is not required in the assignment.
+server.post("/users/login", function (req, res, next) {
+  console.log(req.body.email);
+  User.find({ email: req.body.email, password: req.body.password }).exec(
+    function (error, user) {
+      if (user.length > 0) {
+        // Send the patient if no issues
+        res.send({ success: true, message: "Login successfull" });
+      } else {
+        // Send 404 header if the patient doesn't exist
         res.send(404);
       }
     }
