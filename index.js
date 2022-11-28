@@ -472,7 +472,11 @@ server.post("/users/login", function (req, res, next) {
     function (error, user) {
       if (user.length > 0) {
         // Send the patient if no issues
-        res.send({ success: true, message: "Login successfull" });
+        res.send({
+          success: true,
+          message: "Login successfull",
+          first_name: user[0].first_name,
+        });
       } else {
         // Send 404 header if the patient doesn't exist
         res.send(404);
