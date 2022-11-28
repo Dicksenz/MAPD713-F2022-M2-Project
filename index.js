@@ -2,7 +2,6 @@ var DEFAULT_PORT = 5000;
 var DEFAULT_HOST = "127.0.0.1";
 var SERVER_NAME = "smarthealth";
 
-const { use } = require("chai");
 var http = require("http");
 var mongoose = require("mongoose");
 const { pid } = require("process");
