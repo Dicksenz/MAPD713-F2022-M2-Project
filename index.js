@@ -59,6 +59,15 @@ var userSchema = new mongoose.Schema({
   password: String,
 });
 
+// Professor please ignore this schema as this is for other app integration for android.
+// for testing purposes
+// and is not required in the assignment.
+var locationSchema = new mongoose.Schema({
+  name: String,
+  latitude: String,
+  longitude: String,
+});
+
 // Compiles the schema into a model, opening (or creating, if
 // nonexistent) the 'Patients' collection in the MongoDB database
 var Patient = mongoose.model("patients", patientSchema);
@@ -68,6 +77,7 @@ var Test = mongoose.model("tests", patientClinicalTestSchema);
 // for testing purposes
 // and is not required in the assignment.
 var User = mongoose.model("users", userSchema);
+var Location = mongoose.model("locations", locationSchema);
 
 var errors = require("restify-errors");
 var restify = require("restify"),
@@ -483,4 +493,14 @@ server.post("/users/login", function (req, res, next) {
       }
     }
   );
+});
+
+// Professor please ignore this part as this is for other app integration for android.
+// This is for testing purposes only.
+// Get locations latitudes and longitudes
+server.get("/locations", function (req, res, next) {
+  Location.find({}).exec(function (error, result) {
+    if (error) return next(new Error(JSON.stringify(error.errors)));
+    res.send(result);
+  });
 });
